@@ -383,11 +383,11 @@ int main(int argc, char** argv)
   std::cout << "VirtualMemory page size: " << PAGE_SIZE << " log2_page_size: " << LOG2_PAGE_SIZE << std::endl;
 
   std::cout << std::endl;
-  // std::cout << argc << " sdkj " << optind << " ahfohaoq " << knob_cloudsuite * 1l << std::endl;
   for (int i = optind; i < argc; i++) {
     std::cout << "CPU " << traces.size() << " runs " << argv[i] << std::endl;
 
     traces.push_back(get_tracereader(argv[i], traces.size(), knob_cloudsuite));
+
     if (traces.size() > NUM_CPUS) {
       printf("\n*** Too many traces for the configured number of cores ***\n\n");
       assert(0);
@@ -428,6 +428,7 @@ int main(int argc, char** argv)
           c->print_deadlock();
           std::cout << std::endl;
         }
+
         abort();
       }
     }

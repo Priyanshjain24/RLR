@@ -75,10 +75,6 @@ ooo_model_instr tracereader::read_single_instr()
 
   // copy the instruction into the performance model's instruction format
   ooo_model_instr retval(cpu, trace_read_instr);
-
-  // Print instruction details
-  // std::cout << "Read instruction from tracefile: " << retval.is_branch << std::endl;
-
   return retval;
 }
 
@@ -86,9 +82,7 @@ void tracereader::open(std::string trace_string)
 {
   char gunzip_command[4096];
   sprintf(gunzip_command, cmd_fmtstr.c_str(), decomp_program.c_str(), trace_string.c_str());
-  // std::cout << " aaaaaaaa "<< trace_string << "  $$$$$ " << std::endl;
   trace_file = popen(gunzip_command, "r");
-  // std::cout << " $$$$$$$$$ "<< trace_string << "  aaaaaaaa " << std::endl;
   if (trace_file == NULL) {
     std::cerr << std::endl << "*** CANNOT OPEN TRACE FILE: " << trace_string << " ***" << std::endl;
     assert(0);
@@ -123,7 +117,6 @@ public:
     ooo_model_instr retval = last_instr;
 
     last_instr = trace_read_instr;
-    // retval
     return retval;
   }
 };
@@ -139,7 +132,6 @@ public:
   ooo_model_instr get()
   {
     ooo_model_instr trace_read_instr = read_single_instr<input_instr>();
-    // std::cout << "Priyanshu" << std::endl;
 
     if (!initialized) {
       last_instr = trace_read_instr;

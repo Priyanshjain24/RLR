@@ -338,7 +338,7 @@ void O3_CPU::do_translate_fetch(champsim::circular_buffer<ooo_model_instr>::iter
   trace_packet.to_return = {&ITLB_bus};
   for (; begin != end; ++begin)
     trace_packet.instr_depend_on_me.push_back(begin);
-  // std::cout << "Translate - LOAD" << std::endl;
+
   int rq_index = ITLB_bus.lower_level->add_rq(&trace_packet);
 
   if (rq_index != -2) {
@@ -348,8 +348,6 @@ void O3_CPU::do_translate_fetch(champsim::circular_buffer<ooo_model_instr>::iter
       dep_it->translated = INFLIGHT;
     }
   }
-
-  // std::cout << "LD " << trace_packet.instr_id << std::endl;
 }
 
 void O3_CPU::fetch_instruction()
@@ -394,7 +392,7 @@ void O3_CPU::do_fetch_instruction(champsim::circular_buffer<ooo_model_instr>::it
   fetch_packet.to_return = {&L1I_bus};
   for (; begin != end; ++begin)
     fetch_packet.instr_depend_on_me.push_back(begin);
-// std::cout << "Fetch - LOAD" << std::endl;
+
   int rq_index = L1I_bus.lower_level->add_rq(&fetch_packet);
 
   if (rq_index != -2) {
@@ -403,8 +401,6 @@ void O3_CPU::do_fetch_instruction(champsim::circular_buffer<ooo_model_instr>::it
       dep_it->fetched = INFLIGHT;
     }
   }
-
-    // std::cout << "LD " << fetch_packet.instr_id << std::endl;
 }
 
 void O3_CPU::promote_to_decode()
@@ -503,9 +499,7 @@ void O3_CPU::dispatch_instruction()
     throw champsim::deadlock{cpu};
 }
 
-int O3_CPU::prefetch_code_line(uint64_t pf_v_addr) { 
-  // std::cout << std::hex << pf_v_addr << std::dec << " PR " << pf_v_addr << std::endl; 
-return static_cast<CACHE*>(L1I_bus.lower_level)->prefetch_line(0, pf_v_addr, pf_v_addr, true, 0); }
+int O3_CPU::prefetch_code_line(uint64_t pf_v_addr) { return static_cast<CACHE*>(L1I_bus.lower_level)->prefetch_line(0, pf_v_addr, pf_v_addr, true, 0); }
 
 void O3_CPU::schedule_instruction()
 {
@@ -835,7 +829,7 @@ int O3_CPU::do_translate_store(std::vector<LSQ_ENTRY>::iterator sq_it)
   data_packet.asid[1] = sq_it->asid[1];
   data_packet.to_return = {&DTLB_bus};
   data_packet.sq_index_depend_on_me = {sq_it};
-// std::cout << "Translate - RFO" << std::endl;
+
   DP(if (warmup_complete[cpu]) {
     std::cout << "[RTS0] " << __func__ << " instr_id: " << sq_it->instr_id << " rob_index: " << sq_it->rob_index << " is popped from to RTS0" << std::endl;
   })
@@ -850,8 +844,6 @@ int O3_CPU::do_translate_store(std::vector<LSQ_ENTRY>::iterator sq_it)
 
 void O3_CPU::execute_store(std::vector<LSQ_ENTRY>::iterator sq_it)
 {
-  // std::cout << sq_it->ip << " RFO " << std::hex << sq_it->physical_address << std::dec << std::endl;
-  
   sq_it->fetched = COMPLETED;
   sq_it->event_cycle = current_cycle;
 
@@ -928,8 +920,6 @@ int O3_CPU::execute_load(std::vector<LSQ_ENTRY>::iterator lq_it)
   data_packet.asid[1] = lq_it->asid[1];
   data_packet.to_return = {&L1D_bus};
   data_packet.lq_index_depend_on_me = {lq_it};
-
-  // std::cout << lq_it->ip << " LD " << std::hex << lq_it->physical_address << std::dec << std::endl;
 
   int rq_index = L1D_bus.lower_level->add_rq(&data_packet);
 
@@ -1112,10 +1102,7 @@ void O3_CPU::retire_rob()
 {
   unsigned retire_bandwidth = RETIRE_WIDTH;
 
-  // std::cout << ROB.front().ip << " WB " << std::hex << data_packet.address << std::dec << std::endl;
-
   while (retire_bandwidth > 0 && !ROB.empty() && (ROB.front().executed == COMPLETED)) {
-    
     for (uint32_t i = 0; i < MAX_INSTR_DESTINATIONS; i++) {
       if (ROB.front().destination_memory[i]) {
 
@@ -1133,8 +1120,6 @@ void O3_CPU::retire_rob()
         data_packet.type = RFO;
         data_packet.asid[0] = sq_it->asid[0];
         data_packet.asid[1] = sq_it->asid[1];
-// std::cout << "Retire - RFO" << std::endl;
-        // std::cout << data_packet.ip << " WB " << std::hex << data_packet.address << std::dec << std::endl;
 
         auto result = L1D_bus.lower_level->add_wq(&data_packet);
         if (result != -2) {

@@ -17,10 +17,6 @@ uint32_t CACHE::find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const
 void CACHE::update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, uint64_t full_addr, uint64_t ip, uint64_t victim_addr, uint32_t type,
                                      uint8_t hit)
 {
-  // print trace information
-  // std::cout << ip << " " << type << " " << full_addr << std::endl;
-  printf("ip %lu       type %u        full_addr %lu \n", ip, type, full_addr);
-
   if (hit && type == WRITEBACK)
     return;
 
