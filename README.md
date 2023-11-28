@@ -7,8 +7,8 @@
 | **Member Name** | **Member Roll No.** |
 | :-------------: | :-----------------: |
 |  Priyansh Jain  |     210070063       |
-| Priyanshu Gupta |     210070063       |
-|  Chinmay Jadhav |     210070063       |
+| Priyanshu Gupta |     210070064       |
+|  Chinmay Jadhav |     210020057       |
 
 <br/>
 
